@@ -1,26 +1,23 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './navbar';
-import Services from './service';
-import Contact from './contact';
-import Footer from './footer';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+
+
+
+import Home from "./pages/Home";
+import Contact from "./components/contact";
+import Navbar from "./components/navbar";
+import Services from "./components/service";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen">
-        <Navbar />
+       <Navbar/>
         <Routes>
-          <Route path="/" element={
-            <>
-             
-              <Services/>
-              <Contact /> 
-              <Footer/>
-            
-            </>
-          } />
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
