@@ -323,7 +323,7 @@ const Contact = () => {
               </p>
             </form>
           )}
-        </div>git init
+        </div>
       </div>
     </div>
   );
