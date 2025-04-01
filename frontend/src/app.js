@@ -1,15 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-
-
-
 import Home from "./pages/Home";
 import Contact from "./components/contact";
 import Navbar from "./components/navbar";
 import Services from "./components/service";
 import Dashboard from "./pages/Dashboard";
-import CookieConsent from "./components/cookies";
+
+import AuthPage from "./pages/Authentication";
 
 
 function App() {
@@ -20,9 +17,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<AuthPage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/CookieConsent" element={<CookieConsent/>} />
         </Routes>
       </div>
     </Router>
