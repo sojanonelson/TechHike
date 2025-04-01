@@ -3,6 +3,7 @@ import Footer from "../components/footer";
 import Contact from "../components/contact";
 import Services from "../components/service";
 import CookieContent from "../components/cookies";
+import SideContactNavbar from "../components/SideContactDialogue";
 
 const Home = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -37,6 +38,7 @@ const Home = () => {
     <div>
       <Services/>
       <Contact/>
+      <SideContactNavbar/>
       <Footer/>
       <CookieContent/>
       

@@ -1,19 +1,49 @@
+// src/AuthPage.js
 import { useState } from 'react';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { Mail, Lock, User, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
+// Import auth service functions
+import { checkEmailExists, login, signup, googleLogin } from '../services/authService'
+
+// Import components (assumed to exist)
+import AuthHeader from '../components/AuthHeader'
+import ErrorMessage from '../components/ErrorMessage'
+import LoginForm from '../components/LoginForm'
+import SignupStep1Form from '../components/SignupStep1Form'
+import SignupStep2Form from '../components/SignupStep2Form'
+import EmailExistsMessage from "../components/EmailExistsMessage"
+import AuthFooter from '../components/AuthFooter'
+import { Navigate, useNavigate } from 'react-router-dom';
+import { loginUser } from '../redux/userSlice';
+import { useDispatch } from 'react-redux';
+
+
+
 const AuthPage = () => {
+  const dispatch = useDispatch();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
+    howHeard: '',
+    occupation: '',
+    googleId: '',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [signUpStep, setSignUpStep] = useState(1);
+  const [isGoogleSignup, setIsGoogleSignup] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
 
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
+    setError('');
+    setSignUpStep(1);
+    setIsGoogleSignup(false);
+    setEmailExists(false);
   };
 
   const handleInputChange = (e) => {
@@ -24,161 +54,182 @@ const AuthPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     if (isLogin) {
-      console.log('Logging in with:', formData.email, formData.password);
-      // Add your login logic here
+      try {
+        setLoading(true);
+        const data = await login(formData.email, formData.password);
+        localStorage.setItem('token', data.token); // Still store in localStorage for persistence
+        localStorage.setItem('user', JSON.stringify(data.user));
+        dispatch(loginUser({ token: data.token, user: data.user })); // Update Redux state
+        console.log('Login successful', data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     } else {
-      console.log('Signing up with:', formData.name, formData.email, formData.password);
-      // Add your signup logic here
+      if (signUpStep === 1) {
+        try {
+          setLoading(true);
+          const data = await checkEmailExists(formData.email);
+          setEmailExists(data.exists);
+          setSignUpStep(2);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        try {
+          setLoading(true);
+          const payload = isGoogleSignup
+            ? {
+                email: formData.email,
+                name: formData.name,
+                howHeard: formData.howHeard,
+                occupation: formData.occupation,
+                googleId: formData.googleId,
+              }
+            : {
+                email: formData.email,
+                name: formData.name,
+                password: formData.password,
+                howHeard: formData.howHeard,
+                occupation: formData.occupation,
+              };
+          const data = await signup(payload, isGoogleSignup);
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          dispatch(loginUser({ token: data.token, user: data.user })); // Update Redux state
+          console.log('Registration successful', data);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      }
     }
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential);
-    console.log('Google auth success:', decoded);
-    // Handle user authentication with your backend
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      const { email, sub: googleId, name } = decoded;
+      setFormData({
+        ...formData,
+        email,
+        name: name || '',
+        googleId,
+      });
+      setLoading(true);
+
+      const emailCheck = await checkEmailExists(email);
+      if (emailCheck.exists) {
+        if (isLogin) {
+          const loginData = await googleLogin(googleId, email);
+          localStorage.setItem('token', loginData.token);
+          localStorage.setItem('user', JSON.stringify(loginData.user));
+          dispatch(loginUser({ token: loginData.token, user: loginData.user })); // Update Redux state
+          console.log('Google login successful', loginData);
+        } else {
+          setEmailExists(true);
+          setSignUpStep(2);
+        }
+      } else {
+        setIsGoogleSignup(true);
+        setSignUpStep(2);
+        if (isLogin) {
+          setIsLogin(false);
+        }
+      }
+    } catch (error) {
+      console.error('Google auth error:', error);
+      setError(error.message || 'Google authentication failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleError = () => {
     console.log('Google auth failed');
+    setError('Google authentication failed');
+  };
+
+  const skipAdditionalInfo = async () => {
+    const payload = isGoogleSignup
+      ? {
+          email: formData.email,
+          name: formData.name,
+          googleId: formData.googleId,
+        }
+      : {
+          email: formData.email,
+          name: formData.name,
+          password: formData.password,
+        };
+    try {
+      const data = await signup(payload, isGoogleSignup);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      dispatch(loginUser({ token: data.token, user: data.user })); // Update Redux state
+      console.log('Registration successful', data);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <div className="min-h-screen bg-gradient-to-br bg-white flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-md">
+        <div className="bg-white rounded-2xl overflow-hidden w-full max-w-md">
           <div className="p-8">
             <div className="flex justify-center mb-8">
-              <div className="bg-blue-100 p-4 rounded-full">
-                <div className="bg-blue-500 p-3 rounded-full text-white">
-                  {isLogin ? <LogIn size={24} /> : <UserPlus size={24} />}
-                </div>
-              </div>
+              {/* Your logo here */}
             </div>
 
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
-            </h2>
-            <p className="text-gray-600 text-center mb-8">
-              {isLogin ? 'Sign in to continue' : 'Sign up to get started'}
-            </p>
+            <AuthHeader isLogin={isLogin} signUpStep={signUpStep} emailExists={emailExists} />
+            <ErrorMessage error={error} />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {!isLogin && (
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="text-gray-400" size={20} />
-                  </div>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-              )}
-
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="text-gray-400" size={20} />
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="text-gray-400" size={20} />
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="text-gray-400" size={20} />
-                  ) : (
-                    <Eye className="text-gray-400" size={20} />
-                  )}
-                </button>
-              </div>
-
-              {isLogin && (
-                <div className="flex justify-end">
-                  <a href="#" className="text-sm text-blue-600 hover:underline">
-                    Forgot password?
-                  </a>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200"
-              >
-                {isLogin ? 'Sign In' : 'Sign Up'}
-              </button>
-            </form>
-
-            <div className="my-6 flex items-center">
-              <div className="flex-1 border-t border-gray-200"></div>
-              <span className="px-3 text-gray-500 text-sm">OR</span>
-              <div className="flex-1 border-t border-gray-200"></div>
-            </div>
-
-            <div className="flex justify-center mb-6">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleError}
-                shape="pill"
-                size="large"
-                text={isLogin ? 'signin_with' : 'signup_with'}
+            {emailExists && !isLogin ? (
+              <EmailExistsMessage toggleAuthMode={toggleAuthMode} />
+            ) : isLogin ? (
+              <LoginForm
+                formData={formData}
+                handleInputChange={handleInputChange}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                handleSubmit={handleSubmit}
+                loading={loading}
+                handleGoogleSuccess={handleGoogleSuccess}
+                handleGoogleError={handleGoogleError}
               />
-            </div>
+            ) : signUpStep === 1 ? (
+              <SignupStep1Form
+                formData={formData}
+                handleInputChange={handleInputChange}
+                handleSubmit={handleSubmit}
+                loading={loading}
+                handleGoogleSuccess={handleGoogleSuccess}
+                handleGoogleError={handleGoogleError}
+              />
+            ) : (
+              <SignupStep2Form
+                isGoogleSignup={isGoogleSignup}
+                formData={formData}
+                handleInputChange={handleInputChange}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                handleSubmit={handleSubmit}
+                loading={loading}
+                skipAdditionalInfo={skipAdditionalInfo}
+              />
+            )}
 
-            <div className="text-center text-sm text-gray-600">
-              {isLogin ? (
-                <>
-                  Don't have an account?{' '}
-                  <button
-                    onClick={toggleAuthMode}
-                    className="text-blue-600 hover:underline font-medium"
-                  >
-                    Sign up
-                  </button>
-                </>
-              ) : (
-                <>
-                  Already have an account?{' '}
-                  <button
-                    onClick={toggleAuthMode}
-                    className="text-blue-600 hover:underline font-medium"
-                  >
-                    Sign in
-                  </button>
-                </>
-              )}
-            </div>
+            <AuthFooter isLogin={isLogin} toggleAuthMode={toggleAuthMode} />
           </div>
         </div>
       </div>
