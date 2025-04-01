@@ -9,6 +9,8 @@ import Contact from "./components/contact";
 import Navbar from "./components/navbar";
 import Services from "./components/service";
 import Dashboard from "./pages/Dashboard";
+import CookieConsent from "./components/cookies";
+
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/CookieConsent" element={<CookieConsent/>} />
         </Routes>
       </div>
     </Router>
