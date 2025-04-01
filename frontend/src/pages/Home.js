@@ -43,6 +43,7 @@ const Home = () => {
       {/* Advanced Scroll up button */}
       {showScrollButton && (
         <button
+        className="animate-bounce"
           onClick={scrollToTop}
           style={{
             position: "fixed",
