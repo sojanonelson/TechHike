@@ -9,6 +9,7 @@ import Contact from "./components/contact";
 import Navbar from "./components/navbar";
 import Services from "./components/service";
 import Dashboard from "./pages/Dashboard";
+import AuthPage from "./pages/Authentication";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<AuthPage />} />
         </Routes>
       </div>
     </Router>

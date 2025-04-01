@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
+import Logo from '../assets/logo.png'
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -11,7 +11,8 @@ const Navbar = () => {
     { path: '/services', label: 'Services' },
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
-    { path: '/dashboard', label: 'Dashboard' }
+    { path: '/dashboard', label: 'Dashboard' },
+    { path: '/login', label: 'Login' }
   ];
 
   useEffect(() => {
@@ -31,10 +32,10 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link 
               to="/" 
-              className="flex-shrink-0 group relative"
-            >
+              className="flex-shrink-0 flex group relative"
+            ><img src={Logo} alt='logo' className='w-10'></img>
               <h1 className="text-2xl font-bold text-black transition-colors duration-300 group-hover:text-blue-600">
-                Tech HiKE
+                Tech Hike
               </h1>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
