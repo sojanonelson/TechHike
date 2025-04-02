@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.no-select-cursor {
+    user-select: none; /* Disable text selection */
+    cursor: default;   /* Default cursor */
+  }

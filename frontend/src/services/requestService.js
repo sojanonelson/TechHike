@@ -51,3 +51,14 @@ export const getRequestsByUserId = async (userId,token) => {
   return response.data.data;
 };
 
+
+export const createRequest = async (requestData,token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.post(`${API_URL}/request`,requestData, config);
+  return response.data.data;
+};
+

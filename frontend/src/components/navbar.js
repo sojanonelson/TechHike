@@ -1,6 +1,6 @@
 // src/components/Navbar.js
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../redux/userSlice'; // Ensure path matches your structure
 import Logo from '../assets/logo.png';
@@ -11,6 +11,7 @@ const Navbar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user); // Get user from Redux
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +33,9 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    
     dispatch(logoutUser());
+    navigate('/login')
     setIsOpen(false); // Close mobile menu on logout
   };
 

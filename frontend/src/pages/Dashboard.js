@@ -11,6 +11,7 @@ import Clients from "./Clients";
 import UserProject from "./UserProject";
 import UserDashboard from "./UserDashboardHome";
 import UserRequest from "./UserRequest";
+import NotFound from "./NotFound";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -44,7 +45,8 @@ const Dashboard = () => {
           <Route path="projects" element={userRole === "admin" ? <ProjectManagement /> : <UserProject />} />
           <Route path="projects/:projectId" element={<ProjectDetail />} />
           <Route path="request" element={userRole === "admin" ? <RequestManagement /> : <UserRequest />} />
-          <Route path="clients" element={<Clients />} />
+        
+          <Route path="clients" element={userRole === "admin" ? <Clients /> : <NotFound/> } />
         </Routes>
       </motion.main>
     </div>

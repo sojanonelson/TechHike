@@ -37,6 +37,7 @@ const AuthPage = () => {
   const [signUpStep, setSignUpStep] = useState(1);
   const [isGoogleSignup, setIsGoogleSignup] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
+  const navigate = useNavigate()
 
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
@@ -66,6 +67,7 @@ const AuthPage = () => {
         localStorage.setItem('user', JSON.stringify(data.user));
         dispatch(loginUser({ token: data.token, user: data.user })); // Update Redux state
         console.log('Login successful', data);
+        navigate('/dashboard')
       } catch (err) {
         setError(err.message);
       } finally {
