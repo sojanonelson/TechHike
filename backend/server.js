@@ -8,7 +8,8 @@ const authRoutes = require('./routes/authRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const adminRoutes = require('./routes/adminRoute')
-
+const userRoutes = require('./routes/userRoute')
+const dashboardRoutes = require('./routes/dashboard')
 const app = express();
 
 // Middleware
@@ -23,6 +24,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/request', requestRoutes);
 app.use('/api/project', projectRoutes);
 app.use('/api/admins', adminRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

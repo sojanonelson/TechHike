@@ -32,7 +32,7 @@ const projectRequestSchema = new mongoose.Schema({
   },
   projectStatusUrl: {
     type: String,
-    required: true,
+    required: false,
   },
 }, { timestamps: true });
 

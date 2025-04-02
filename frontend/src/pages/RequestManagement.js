@@ -96,7 +96,7 @@ const RequestManagement = () => {
   };
 
   const handleViewProgress = (projectId) => {
-    navigate(`/project/${projectId}`);
+    navigate(`/dashboard/projects/${projectId}`);
   };
 
   if (loading) return <div className="flex items-center justify-center h-screen text-black">Loading...</div>;
@@ -167,7 +167,7 @@ const RequestManagement = () => {
                   </button>
                 ) : (
                   <button
-                    onClick={() => handleViewProgress(request._id)}
+                    onClick={() => handleViewProgress(request.projectStatusUrl)}
                     className="flex items-center gap-1 px-3 py-1 text-blue-600 hover:text-blue-800"
                   >
                     <Eye size={14} /> View Progress

@@ -40,3 +40,14 @@ export const getAllDevelopers = async (token) => {
   const response = await axios.get(`${API_URL}/developer`, config);
   return response.data;
 };
+
+export const getRequestsByUserId = async (userId,token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await axios.get(`${API_URL}/request/user/${userId}`, config);
+  return response.data.data;
+};
+

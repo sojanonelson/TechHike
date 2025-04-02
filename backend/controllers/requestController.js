@@ -6,7 +6,7 @@ const User = require('../models/User'); // Ensure you have the correct User mode
 
 exports.submitProjectRequest = async (req, res) => {
   const {clientId, projectTitle, projectDescription } = req.body;
-  const projectStatusUrl = `/track/${Date.now()}`;
+
   console.log("ClientID:", clientId)
 
 
@@ -25,12 +25,12 @@ exports.submitProjectRequest = async (req, res) => {
       phoneNumber:user.phoneNumber,
       email: user.email,
       projectDescription,
-      requestStatus: 'Pending',
-      projectStatusUrl,
+      requestStatus: 'Pending'
+      
     });
 
     await newRequest.save();
-    res.status(201).json({ requestId: newRequest._id, projectStatusUrl });
+    res.status(201).json({ requestId: newRequest._id  });
   } catch (err) {
     res.status(500).json({ message: 'Error submitting request', error: err.message });
   }
@@ -60,53 +60,83 @@ exports.getAllProjectRequests = async (req, res) => {
 };
 
 exports.approveProjectRequest = async (req, res) => {
-    console.log("Approve ahead");
-    const { requestId } = req.params;
-    const { developerIds, price } = req.body; // Accept price in request
+  console.log("Approve ahead");
+  const { requestId } = req.params;
+  const { developerIds, price } = req.body; // Accept price in request
 
-    try {
-        // Find the project request by ID
-        const request = await ProjectRequest.findById(requestId);
-        if (!request) return res.status(404).json({ message: 'Request not found' });
+  try {
+      // Find the project request by ID
+      const request = await ProjectRequest.findById(requestId);
+      if (!request) return res.status(404).json({ message: 'Request not found' });
 
-        // Find the client details
-        const client = await User.findById(request.clientId);
-        if (!client) return res.status(404).json({ message: 'Client not found' });
+      // Find the client details
+      const client = await User.findById(request.clientId);
+      if (!client) return res.status(404).json({ message: 'Client not found' });
 
-        // Update the request with additional details
-        request.requestStatus = 'Approved';
-        request.clientName = client.name;
-        request.registeredId = client._id; // Assuming the registered ID is the client's ID
-        request.price = price;
-        request.developers = developerIds; // Store assigned developers as an array
+      // Create a new project with the approved request details
+      const newProject = new Project({
+          clientId: request.clientId,
+          clientName: client.name,
+          projectTitle: request.projectTitle,
+          projectDescription: request.projectDescription,
+          projectStatus: 'Pending', // Default status
+          price: price,
+          developers: developerIds
+      });
 
-        await request.save();
+      await newProject.save(); // Save the project first
 
-        // Create a new project with the approved request details
-        const newProject = new Project({
-            clientId: request.clientId,
-            clientName: request.clientName,
-            projectTitle: request.projectTitle,
-            projectDescription: request.projectDescription,
-            projectStatus: 'Pending', // Set default status
-            price: request.price,
-            developers: request.developers
-        });
+      // Update the request with the new project ID
+      request.requestStatus = 'Approved';
+      request.clientName = client.name;
+      request.registeredId = client._id;
+      request.price = price;
+      request.developers = developerIds;
+      request.projectStatusUrl = newProject._id; // Now we can assign the ID
 
-        await newProject.save();
+      await request.save(); // Save the updated request
 
-        res.status(200).json({
-            message: 'Project request approved successfully and new project created',
-            projectId: newProject._id,
-            clientName: request.clientName,
-            registeredId: request.registeredId,
-            price: request.price,
-            developers: request.developers,
-        });
+      res.status(200).json({
+          message: 'Project request approved successfully and new project created',
+          projectId: newProject._id,
+          clientName: request.clientName,
+          registeredId: request.registeredId,
+          price: request.price,
+          developers: request.developers,
+      });
 
-    } catch (err) {
-        res.status(500).json({ message: 'Error approving request', error: err.message });
-    }
+  } catch (err) {
+      res.status(500).json({ message: 'Error approving request', error: err.message });
+  }
 };
 
+exports.getUserRequests = async (req, res) => {
+  try {
+    const { userId } = req.params;
 
+    // Fetch requests where clientId matches the userId
+    const requests = await ProjectRequest.find({ clientId: userId }).select(
+      'projectTitle clientName createdAt requestStatus projectStatusUrl'
+    );
+
+    if (!requests || requests.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No requests found for this user',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: requests,
+      message: 'User requests retrieved successfully',
+    });
+  } catch (error) {
+    console.error('Error fetching user requests:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve user requests',
+      error: error.message,
+    });
+  }
+};

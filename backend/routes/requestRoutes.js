@@ -14,5 +14,6 @@ router.get('/requests/admin', requestController.getAllProjectRequests);
 
 // Approve a project request
 router.put('/:requestId/approve', requestController.approveProjectRequest);
+router.get('/user/:userId', requestController.getUserRequests);
 
 module.exports = router;

@@ -18,8 +18,8 @@ const Sidebar = ({ navigate }) => {
       animate={{ x: 0 }}
       transition={{ type: 'spring', stiffness: 40 }}
     >
-      <div className="p-4 h-full flex flex-col">
-        <h1 className="text-2xl font-bold text-white mb-8 px-4">CollabDash</h1>
+      <div className="p-4  flex flex-col mt-16">
+        <h1 className="text-2xl font-bold text-white mb-8 px-4">Dashboard</h1>
         
         <nav className="flex-1">
           <ul className="space-y-2">
