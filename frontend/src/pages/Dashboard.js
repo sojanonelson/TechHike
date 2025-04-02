@@ -3,7 +3,10 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import DashboardHome from '../pages/DashboardHome';
 import Settings from './Settings';
-import ProjectsPage from './Projects';
+
+import RequestManagement from './RequestManagement';
+import ProjectManagement from './ProjectManagement';
+import ProjectDetail from './ProjectDetail';
 // import ProjectsPage from '../pages/ProjectsPage';
 // import ClientsPage from '../pages/ClientsPage';
 // import PaymentsPage from '../pages/PaymentsPage';
@@ -19,7 +22,7 @@ const Dashboard = () => {
 
       {/* Main Content Area */}
       <motion.main 
-        className="flex-1 p-8 overflow-y-auto"
+        className="flex-1 p-2 overflow-y-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -27,7 +30,9 @@ const Dashboard = () => {
         <Routes>
           <Route path="/" element={<DashboardHome />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="projects" element={<ProjectManagement />} />
+          <Route path="projects/:projectId" element={<ProjectDetail />} />
+             <Route path="request" element={<RequestManagement />} />
           {/* <Route path="clients" element={<ClientsPage />} />
           <Route path="payments" element={<PaymentsPage />} />
           <Route path="settings" element={<SettingsPage />} /> */}

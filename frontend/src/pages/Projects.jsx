@@ -126,7 +126,7 @@ const ProjectsPage = () => {
 
   return (
     <div className="bg-gray-50 mt-5 min-h-screen">
-      <div className="max-w-7xl mx-auto p-4 sm:p-6">
+      <div className="w-full mx-auto p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-0">My Projects</h1>
           <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition">

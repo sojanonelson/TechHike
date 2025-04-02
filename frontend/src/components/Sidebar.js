@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { LayoutDashboard, FileText, Users, Settings, Wallet } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, Settings,Inbox, Wallet } from 'lucide-react';
 
 const Sidebar = ({ navigate }) => {
   const navItems = [
     { name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, path: '' },
     { name: 'Projects', icon: <FileText className="w-5 h-5" />, path: 'projects' },
+    { name: 'Request', icon: <Inbox className="w-5 h-5" />, path: 'request' }, // Updated Icon
     { name: 'Clients', icon: <Users className="w-5 h-5" />, path: 'clients' },
     { name: 'Payments', icon: <Wallet className="w-5 h-5" />, path: 'payments' },
     { name: 'Settings', icon: <Settings className="w-5 h-5" />, path: 'settings' },

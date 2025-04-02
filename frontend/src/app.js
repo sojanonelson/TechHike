@@ -9,6 +9,7 @@ import Services from "./components/service";
 import Dashboard from "./pages/Dashboard";
 import AuthPage from "./pages/Authentication";
 import About from "./pages/About";
+import RequestManagement from "./pages/RequestManagement";
 
 function App() {
   const { user } = useSelector((state) => state.user); // Access user from Redux state
@@ -31,6 +32,8 @@ function App() {
           <Route path="/login" element={<AuthPage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
+          
+       
         </Routes>
       </div>
     </Router>
