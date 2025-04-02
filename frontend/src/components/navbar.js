@@ -1,9 +1,10 @@
-// src/components/Navbar.js
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../redux/userSlice'; // Ensure path matches your structure
 import Logo from '../assets/logo.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +12,7 @@ const Navbar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user); // Get user from Redux
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,9 +34,9 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    
+
     dispatch(logoutUser());
-    navigate('/login')
+    navigate('/login');
     setIsOpen(false); // Close mobile menu on logout
   };
 
@@ -53,7 +54,7 @@ const Navbar = () => {
             isLogout: true, // Custom flag to identify logout item
           },
         ]
-      : [{ path: '/login', label: 'Login' }]),
+      : [{ path: '/login', label: 'Login', isLogin: true }]), // Custom flag to identify login item
   ];
 
   return (
@@ -81,11 +82,21 @@ const Navbar = () => {
                   <span className="text-gray-700">{item.label}</span>
                   <button
                     onClick={handleLogout}
-                    className="text-gray-700 hover:text-blue-600 px-3 py-2 transition-all duration-300"
+                    className="text-gray-700 hover:text-blue-600 px-3 py-2 transition-all duration-300 flex items-center"
                   >
+                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                     Logout
                   </button>
                 </div>
+              ) : item.isLogin ? (
+                <Link
+                  key="login"
+                  to="/login"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 transition-all duration-300 flex items-center"
+                >
+                  <FontAwesomeIcon icon={faSignInAlt} className="mr-2" />
+                  Login
+                </Link>
               ) : (
                 <Link
                   key={item.path}
@@ -96,8 +107,8 @@ const Navbar = () => {
                         ? 'text-blue-600'
                         : 'text-gray-700 hover:text-blue-600'
                     }
-                    before:content-[''] before:absolute before:bottom-0 before:left-0 
-                    before:w-0 before:h-0.5 before:bg-blue-600 
+                    before:content-[''] before:absolute before:bottom-0 before:left-0
+                    before:w-0 before:h-0.5 before:bg-blue-600
                     before:transition-all before:duration-300
                     hover:before:w-full
                   `}
@@ -147,11 +158,22 @@ const Navbar = () => {
                 <span className="text-gray-700">{item.label}</span>
                 <button
                   onClick={handleLogout}
-                  className="text-gray-700 hover:text-blue-600 transition-colors duration-300"
+                  className="text-gray-700 hover:text-blue-600 transition-colors duration-300 flex items-center"
                 >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                   Logout
                 </button>
               </div>
+            ) : item.isLogin ? (
+              <Link
+                key="login"
+                to="/login"
+                className="block px-3 py-2 rounded-md transition-colors duration-300 text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center"
+                onClick={() => setIsOpen(false)} // Close menu on link click
+              >
+                <FontAwesomeIcon icon={faSignInAlt} className="mr-2" />
+                Login
+              </Link>
             ) : (
               <Link
                 key={item.path}
