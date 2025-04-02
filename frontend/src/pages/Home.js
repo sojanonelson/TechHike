@@ -4,6 +4,9 @@ import Contact from "../components/contact";
 import Services from "../components/service";
 import CookieContent from "../components/cookies";
 import SideContactNavbar from "../components/SideContactDialogue";
+import TechStack from "../pages/techused";
+
+
 
 const Home = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -37,6 +40,7 @@ const Home = () => {
   return (
     <div>
       <Services/>
+       <TechStack/>
       <Contact/>
       <SideContactNavbar/>
       <Footer/>
