@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FileText, Wallet, Users, Activity } from 'lucide-react';
+import { FileText, Wallet} from 'lucide-react';
 import DashboardCard from '../components/DashboardCard';
 import ActivityFeed from '../components/ActivityFeed';
 // import ProjectsTable from '../components/ProjectsTable';
@@ -17,7 +17,7 @@ const DashboardHome = () => {
     
       
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 mt-10 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 mt-16 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardCard 
           title="Total Projects" 
           value={stats.totalProjects} 

@@ -10,6 +10,7 @@ const projectRoutes = require('./routes/projectRoutes');
 const adminRoutes = require('./routes/adminRoute')
 const userRoutes = require('./routes/userRoute')
 const dashboardRoutes = require('./routes/dashboard')
+const assistRequestRoutes = require('./routes/assistRequestRoutes');
 const app = express();
 
 // Middleware
@@ -26,6 +27,7 @@ app.use('/api/project', projectRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/assist-request', assistRequestRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

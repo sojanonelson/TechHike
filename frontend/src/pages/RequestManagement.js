@@ -103,7 +103,7 @@ const RequestManagement = () => {
   if (error) return <div className="flex items-center justify-center h-screen text-red-500">{error}</div>;
 
   return (
-    <div className="container mx-auto p-5 w-full mt-10 text-black">
+    <div className="container mx-auto p-5 w-full mt-16 text-black">
       <h1 className="flex items-center gap-2 mb-5 text-2xl">
         <Search className="icon w-5 h-5" />
         Request Management

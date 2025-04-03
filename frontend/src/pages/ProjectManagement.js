@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllProjects, getAssignedProjects } from '../services/projectService';
+import { getAssignedProjects } from '../services/projectService';
 import { useSelector } from 'react-redux';
 
 const ProjectManagement = () => {
@@ -37,7 +37,7 @@ const ProjectManagement = () => {
   if (error) return <div className="flex items-center justify-center h-screen text-red-500">{error}</div>;
 
   return (
-    <div className="container mx-auto p-5 w-full mt-10 text-black">
+    <div className="container mx-auto p-5 w-full mt-16 text-black">
       <h1 className="text-2xl mb-5">All Projects</h1>
       <table className="w-full border-collapse">
         <thead>

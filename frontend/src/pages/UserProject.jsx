@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getAssignedProjects } from '../services/projectService';
-import { Search, Calendar, Briefcase, Clock } from 'lucide-react';
+import { Briefcase, Clock } from 'lucide-react';
 
 const UserProject = () => {
   const [projects, setProjects] = useState([]);
@@ -82,7 +82,7 @@ const UserProject = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen mt-10 p-6">
+    <div className="bg-gray-50 min-h-screen mt-16 p-6">
       <div className=" mx-auto">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">

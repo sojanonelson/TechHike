@@ -6,7 +6,7 @@ import { getAssignedProjects } from '../services/projectService'; // For project
 
 const UserDashboard = () => {
   const [projects, setProjects] = useState([]);
-  const [pendingPayments, setPendingPayments] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();

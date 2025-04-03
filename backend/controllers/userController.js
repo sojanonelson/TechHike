@@ -4,7 +4,7 @@ const User = require('../models/User');
 exports.listClientMentionedRoles = async (req, res) => {
   try {
     // Query to find all users with role 'client' and select specific fields
-    const clientUsers = await User.find({ role: 'client' }).select('name email _id');
+    const clientUsers = await User.find({ role: 'client' })
 
     // Send response with the list of client accounts
     res.status(200).json({

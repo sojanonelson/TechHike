@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { LayoutDashboard, FileText, Users, Settings, Inbox, Moon, Sun } from 'lucide-react';
+import { LayoutDashboard, FileText, Users, Settings, Inbox, Moon, Sun, LifeBuoy } from 'lucide-react'; // Added LifeBuoy
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { toggleTheme } from '../redux/generalSlice'; // Import toggleTheme action (adjust path)
@@ -15,7 +15,9 @@ const Sidebar = ({ navigate }) => {
     { name: 'Projects', icon: <FileText className="w-5 h-5" />, path: 'projects' },
     { name: 'Request', icon: <Inbox className="w-5 h-5" />, path: 'request' },
     { name: 'Clients', icon: <Users className="w-5 h-5" />, path: 'clients' },
-    { name: 'Settings', icon: <Settings className="w-5 h-5" />, path: 'settings' },
+    { name: 'Assistance', icon: <LifeBuoy className="w-5 h-5" />, path: 'assistance' }, // Changed to LifeBuoy
+    { name: 'Settings', icon: <Settings className="w-5 h-5" />, path: 'settings' },,
+    
   ];
 
   // Filter navItems to exclude 'Clients' if user.role is 'client'

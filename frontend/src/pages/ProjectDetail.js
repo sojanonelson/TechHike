@@ -3,13 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProjectInfo} from '../services/projectService';
 import { 
-  Check, Clock, AlertCircle, Github, Image, ChevronRight, Bookmark, 
+  Check, Clock, AlertCircle, Image, ChevronRight, Bookmark, 
   Calendar, User, FileText, ArrowLeft, Settings, Link, Download, 
   Plus, Trash2, Edit, Eye, Star, Zap, Flag, Circle, CheckCircle
 } from 'lucide-react';
-import image1 from '../assets/1.png'
-import image2 from '../assets/2.png'
-import image3 from '../assets/3.png'
+
 
 const ProjectDetail = () => {
   const { projectId } = useParams();
