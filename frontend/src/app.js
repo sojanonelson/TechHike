@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; // Add useDispatch
+import { setLightMode } from "./redux/generalSlice"; // Import action to set theme (adjust path)
 import Home from "./pages/Home";
 import Contact from "./components/contact";
 import Navbar from "./components/navbar";
@@ -28,7 +29,9 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  const dispatch = useDispatch(); // Add dispatch
   const { user } = useSelector((state) => state.user);
+  const theme = useSelector((state) => state.general.theme); // Get theme from Redux
 
   useEffect(() => {
     if (user) {
@@ -38,9 +41,20 @@ function App() {
     }
   }, [user]);
 
+  // Check and set theme in localStorage and Redux on app load
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (!storedTheme) { // If theme key does not exist in localStorage
+      localStorage.setItem('theme', 'light'); // Set 'light' in localStorage
+      dispatch(setLightMode()); // Sync Redux state to 'light'
+    }
+    // Optionally apply theme to document root
+    document.documentElement.className = theme;
+  }, [dispatch, theme]); // Include theme in dependencies to re-apply on change
+
   return (
     <Router>
-      <div className="min-h-screen">
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-white' : 'bg-gray-900'}`}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

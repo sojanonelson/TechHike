@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux"; // Import useSelector
 import Sidebar from "../components/Sidebar";
 import DashboardHome from "../pages/DashboardHome";
 import Settings from "./Settings";
@@ -16,6 +17,7 @@ import NotFound from "./NotFound";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
+  const theme = useSelector((state) => state.general.theme); // Get theme from Redux
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -26,27 +28,30 @@ const Dashboard = () => {
     }
   }, [navigate]);
 
+  // Apply theme to document root for global effect
+  useEffect(() => {
+    document.documentElement.className = theme; // Set 'light' or 'dark' on <html>
+  }, [theme]);
+
   return (
-    <div className="flex h-screen bg-white text-white">
+    <div className={`flex h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
       {/* Sidebar Navigation */}
       <Sidebar navigate={navigate} />
 
       {/* Main Content Area */}
       <motion.main
-        className="flex-1 p-2 overflow-y-auto"
+        className={`flex-1 overflow-y-auto ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
         <Routes>
-          {/* <Route path="/" element={<DashboardHome />} /> */}
           <Route path="/" element={userRole === "admin" ? <DashboardHome /> : <UserDashboard />} />
           <Route path="settings" element={<Settings />} />
           <Route path="projects" element={userRole === "admin" ? <ProjectManagement /> : <UserProject />} />
           <Route path="projects/:projectId" element={<ProjectDetail />} />
           <Route path="request" element={userRole === "admin" ? <RequestManagement /> : <UserRequest />} />
-        
-          <Route path="clients" element={userRole === "admin" ? <Clients /> : <NotFound/> } />
+          <Route path="clients" element={userRole === "admin" ? <Clients /> : <NotFound />} />
         </Routes>
       </motion.main>
     </div>
