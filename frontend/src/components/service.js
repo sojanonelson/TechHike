@@ -50,12 +50,15 @@ const Services = () => {
                 <Link to="#contact" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
                   Get Started
                 </Link>
+                <Link to='/works'>
                 <button
                   onClick={handleSeeOurWork}
                   className="border border-gray-300 hover:border-blue-600 text-gray-700 font-bold py-3 px-6 rounded-lg transition duration-300" 
                 >
                   See Our Work
                 </button>
+                </Link>
+               
               </div>
             </div>
             <div className="md:w-1/2 mt-10 md:mt-0">

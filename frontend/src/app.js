@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import AuthPage from "./pages/Authentication";
 import About from "./pages/About";
 import RequestManagement from "./pages/RequestManagement";
+import Work from "./pages/works";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -69,6 +70,7 @@ function App() {
           <Route path="/login" element={<AuthPage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
+          <Route path="/works" element={<Work />} />
         </Routes>
       </div>
     </Router>
