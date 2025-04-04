@@ -30,7 +30,7 @@ const Services = () => {
   ];
 
   const handleSeeOurWork = () => {
-    navigate('/work');
+    navigate('/works');
   };
 
   return (
