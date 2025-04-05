@@ -12,6 +12,7 @@ const Navbar = () => {
   const theme = useSelector((state) => state.general.theme); // Get theme from Redux
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
   const location = useLocation();
   const { user } = useSelector((state) => state.user); // Get user from Redux
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const Navbar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     dispatch(logoutUser());
-    navigate('/login');
+    navigate('/auth');
     setIsOpen(false);
   };
 
@@ -49,16 +50,16 @@ const Navbar = () => {
     { path: '/', label: 'Home' },
     { path: '/services', label: 'Services' },
     { path: '/about', label: 'About' },
-    { path: '/dashboard', label: 'Dashboard' },
     ...(user
       ? [
           {
             path: '#',
             label: `Welcome, ${user.name}`,
-            isLogout: true,
+            isWelcome: true,
           },
+          { path: '/dashboard', label: 'Dashboard' },
         ]
-      : [{ path: '/login', label: 'Login', isLogin: true }]),
+      : [{ path: '/auth', label: 'Login', isLogin: true }]),
   ];
 
   return (
@@ -91,25 +92,30 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) =>
-              item.isLogout ? (
-                <div key="logout" className="flex items-center space-x-4">
-                  <span className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>
+              item.isWelcome ? (
+                <div key="welcome" className="flex items-center space-x-4">
+                  <span
+                    className={`cursor-pointer ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}
+                    onClick={() => setShowLogout(!showLogout)}
+                  >
                     {item.label}
                   </span>
-                  <button
-                    onClick={handleLogout}
-                    className={`${
-                      theme === 'light' ? 'text-gray-700 hover:text-blue-600' : 'text-gray-300 hover:text-blue-400'
-                    } px-3 py-2 transition-all duration-300 flex items-center`}
-                  >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-                    Logout
-                  </button>
+                  {showLogout && (
+                    <button
+                      onClick={handleLogout}
+                      className={`${
+                        theme === 'light' ? 'text-gray-700 hover:text-blue-600' : 'text-gray-300 hover:text-blue-400'
+                      } px-3 py-2 transition-all duration-300 flex items-center`}
+                    >
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                      Logout
+                    </button>
+                  )}
                 </div>
               ) : item.isLogin ? (
                 <Link
-                  key="login"
-                  to="/login"
+                  key="auth"
+                  to="/auth"
                   className={`${
                     theme === 'light' ? 'text-gray-700 hover:text-blue-600' : 'text-gray-300 hover:text-blue-400'
                   } px-3 py-2 transition-all duration-300 flex items-center`}
@@ -198,25 +204,30 @@ const Navbar = () => {
           }`}
         >
           {navItems.map((item) =>
-            item.isLogout ? (
-              <div key="logout" className="flex justify-between items-center px-3 py-2">
-                <span className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>
+            item.isWelcome ? (
+              <div key="welcome" className="flex justify-between items-center px-3 py-2">
+                <span
+                  className={`cursor-pointer ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}
+                  onClick={() => setShowLogout(!showLogout)}
+                >
                   {item.label}
                 </span>
-                <button
-                  onClick={handleLogout}
-                  className={`${
-                    theme === 'light' ? 'text-gray-700 hover:text-blue-600' : 'text-gray-300 hover:text-blue-400'
-                  } transition-colors duration-300 flex items-center`}
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-                  Logout
-                </button>
+                {showLogout && (
+                  <button
+                    onClick={handleLogout}
+                    className={`${
+                      theme === 'light' ? 'text-gray-700 hover:text-blue-600' : 'text-gray-300 hover:text-blue-400'
+                    } transition-colors duration-300 flex items-center`}
+                  >
+                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                    Logout
+                  </button>
+                )}
               </div>
             ) : item.isLogin ? (
               <Link
                 key="login"
-                to="/login"
+                to="/auth"
                 className={`block px-3 py-2 rounded-md transition-colors duration-300 ${
                   theme === 'light'
                     ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'

@@ -15,6 +15,7 @@ import UserRequest from "./UserRequest";
 import NotFound from "./NotFound";
 import UserAssistance from "./UserAssistance";
 import AdminAssistance from "./AdminAssistance";
+import UserProjectDetails from "./UserProjectDetails";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -51,9 +52,11 @@ const Dashboard = () => {
           <Route path="/" element={userRole === "admin" ? <DashboardHome /> : <UserDashboard />} />
           <Route path="settings" element={<Settings />} />
           <Route path="projects" element={userRole === "admin" ? <ProjectManagement /> : <UserProject />} />
-          <Route path="projects/:projectId" element={<ProjectDetail />} />
+      
           <Route path="request" element={userRole === "admin" ? <RequestManagement /> : <UserRequest />} />
           <Route path="clients" element={userRole === "admin" ? <Clients /> : <NotFound />} />
+          <Route path="projects/:projectId" element={userRole === "admin" ? <ProjectDetail /> : <UserProjectDetails />} />
+     
      
           <Route path="assistance" element={userRole === 'admin' ? <AdminAssistance/> : <UserAssistance/> } />
           

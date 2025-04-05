@@ -1,11 +1,13 @@
 import React from 'react';
 import { Globe, Smartphone, Cloud, Brain } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
+import { motion } from 'framer-motion'; // Import Framer Motion
 
 const Services = () => {
   const navigate = useNavigate();
-  
+  const { theme } = useSelector((state) => state.general);
+
   const services = [
     {
       title: "Web Development",
@@ -33,67 +35,85 @@ const Services = () => {
     navigate('/works');
   };
 
+  // Animation variants for text
+  const textVariants = {
+    hidden: {
+      x: -50, // Start 50px to the left
+      opacity: 0, // Start invisible
+    },
+    visible: {
+      x: 0, // Move to original position
+      opacity: 1, // Fade in
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        duration: 0.5,
+      },
+    },
+  };
+
   return (
-    <div className="py-20 bg-gray-50">
-      <section className="bg-gray-50 py-20">
+    <div className={`lg:py-20 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <section className={`lg:py-20 py-10 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="md:flex md:items-center md:justify-between">
             <div className="md:w-1/2">
-              <h1 className="text-4xl font-bold text-gray-900 leading-tight mb-4">
+              <motion.h1
+                className={`text-4xl font-bold leading-tight mb-4 ${
+                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                }`}
+                initial="hidden"
+                animate="visible"
+                variants={textVariants}
+              >
                 Building Digital Solutions That <span className="text-blue-600">Drive Growth</span>
-              </h1>
-              <p className="text-lg text-gray-600 mb-8">
+              </motion.h1>
+              <motion.p
+                className={`lg:text-lg text-sm mb-8 ${
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                }`}
+                initial="hidden"
+                animate="visible"
+                variants={textVariants}
+                transition={{ delay: 0.2 }} // Slight delay for staggered effect
+              >
                 We're a trusted software development partner for businesses worldwide. 
                 Let us transform your ideas into powerful digital solutions.
-              </p>
+              </motion.p>
               <div className="flex space-x-4">
-                <Link to="#contact" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                <Link
+                  to="#contact"
+                  className={`bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300`}
+                >
                   Get Started
                 </Link>
                 <Link to='/works'>
-                <button
-                  onClick={handleSeeOurWork}
-                  className="border border-gray-300 hover:border-blue-600 text-gray-700 font-bold py-3 px-6 rounded-lg transition duration-300" 
-                >
-                  See Our Work
-                </button>
+                  <button
+                    onClick={handleSeeOurWork}
+                    className={`border font-bold py-3 px-6 rounded-lg transition duration-300 ${
+                      theme === 'dark'
+                        ? 'border-gray-600 hover:border-blue-500 text-gray-300 hover:text-blue-500'
+                        : 'border-gray-300 hover:border-blue-600 text-gray-700 hover:text-blue-600'
+                    }`}
+                  >
+                    See Our Work
+                  </button>
                 </Link>
-               
               </div>
             </div>
             <div className="md:w-1/2 mt-10 md:mt-0">
-            <img 
+              <img 
                 src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" 
                 alt="Software Development" 
-                className="rounded-lg shadow-xl"
+                className={`r  ${
+                  theme === 'dark' ? 'shadow-gray-800' : 'shadow-gray-300'
+                }`}
               />
             </div>
           </div>
         </div>
       </section>
-      <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Our Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map((service, index) => {
-            const IconComponent = service.icon;
-            return (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-md group hover:shadow-xl transition-all duration-300 hover:bg-blue-50 relative overflow-hidden transform hover:-translate-y-1"
-              >
-                <div className="absolute w-2 h-0 bg-blue-500 top-0 left-0 group-hover:h-full transition-all duration-300"></div>
-                <div className="relative z-10">
-                  <div className="text-gray-700 mb-4 group-hover:text-blue-600 transition-colors duration-300">
-                    <IconComponent size={36} strokeWidth={1.5} />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-700 transition-colors duration-300">{service.title}</h3>
-                  <p className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">{service.description}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 };

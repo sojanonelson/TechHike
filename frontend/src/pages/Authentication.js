@@ -108,6 +108,7 @@ const AuthPage = () => {
           localStorage.setItem('user', JSON.stringify(data.user));
           dispatch(loginUser({ token: data.token, user: data.user })); // Update Redux state
           console.log('Registration successful', data);
+          navigate('/dashboard')
         } catch (err) {
           setError(err.message);
         } finally {
@@ -137,6 +138,7 @@ const AuthPage = () => {
           localStorage.setItem('user', JSON.stringify(loginData.user));
           dispatch(loginUser({ token: loginData.token, user: loginData.user })); // Update Redux state
           console.log('Google login successful', loginData);
+          navigate('/dashboard')
         } else {
           setEmailExists(true);
           setSignUpStep(2);

@@ -5,18 +5,19 @@ import {
   payAssistRequest, 
   submitFeedback 
 } from '../services/assistRequestService';
-import { Clock, Check, Phone, User, Star, DollarSign, Eye, X } from 'lucide-react'; // Added DollarSign, Eye, X
+import { Clock, Check, Phone, User, Star, DollarSign, Eye, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 
 const UserAssistance = () => {
   const [assistRequests, setAssistRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedReq, setSelectedReq] = useState(''); // Updated to use selectedReq
-  const [transactionId, setTransactionId] = useState(''); // State for transaction ID input
+  const [selectedReq, setSelectedReq] = useState(null); // Changed to null for clarity
+  const [transactionId, setTransactionId] = useState('');
   const { user } = useSelector((state) => state.user);
-  console.log("user:", user);
   const theme = useSelector((state) => state.general.theme);
+    const navigate = useNavigate()
 
   useEffect(() => {
     const fetchAssistRequests = async () => {
@@ -30,7 +31,9 @@ const UserAssistance = () => {
       }
     };
 
-    fetchAssistRequests();
+    if (user?.id) {
+      fetchAssistRequests();
+    }
   }, [user?.id]);
 
   const formatDate = (dateString) => {
@@ -39,13 +42,10 @@ const UserAssistance = () => {
     return date.toLocaleDateString();
   };
 
-  const handlePayment = (requestId) => {
-    const request = assistRequests.find(req => req._id === requestId);
-    setSelectedReq(request); // Set the full request data
+  const handlePayment = (request) => {
+    setSelectedReq(request); // Set the full request object directly
     setTransactionId(''); // Reset transaction ID input
   };
-
-  console.log("S:", selectedReq._id)
 
   const handlePaymentSubmit = async (requestId, paymentType) => {
     if (!transactionId.trim()) {
@@ -53,16 +53,13 @@ const UserAssistance = () => {
       return;
     }
 
-    
-
     try {
-      const updatedRequest = await payAssistRequest(selectedReq._id, paymentType, transactionId);
+      const updatedRequest = await payAssistRequest(requestId, paymentType, transactionId);
       setAssistRequests(prev =>
         prev.map(req => (req._id === requestId ? updatedRequest : req))
       );
-      setSelectedReq(null); // Clear the selected request
+      setSelectedReq(null);
       setError(null);
-      
       window.location.reload();
     } catch (err) {
       setError(err.message || 'Payment submission failed');
@@ -90,7 +87,11 @@ const UserAssistance = () => {
 
   if (loading) return (
     <div className={`flex items-center justify-center h-screen ${theme === 'dark' ? 'text-white bg-gray-900' : 'text-black bg-white'}`}>
-      Loading...
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        className="h-12 w-12 rounded-full border-4 border-blue-500 border-t-transparent"
+      />
     </div>
   );
 
@@ -105,9 +106,35 @@ const UserAssistance = () => {
       <h1 className="text-3xl font-bold mb-6">Your Assist Requests</h1>
 
       {assistRequests.length === 0 ? (
-        <p className={`text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-          No assist requests found.
-        </p>
+        <div className={`flex flex-col items-center justify-center p-6 rounded-lg shadow-md ${
+          theme === 'dark' ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-500'
+        }`}>
+          <svg
+            className={`w-12 h-12 mb-4 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-6 0h6m-9 4h12m-6-8v4"
+            />
+          </svg>
+          <p className="text-lg font-semibold mb-4">No assist requests found</p>
+          <button
+            onClick={() => navigate('/dashboard/request')}
+            className={`py-2 px-4 rounded-lg font-medium transition-colors duration-200 ${
+              theme === 'dark'
+                ? 'bg-blue-700 text-white hover:bg-blue-600'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            }`}
+          >
+            Go to Request Section
+          </button>
+        </div>
       ) : (
         <div className={`shadow-md rounded-lg overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
           <table className="w-full border-collapse">
@@ -160,7 +187,7 @@ const UserAssistance = () => {
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-4">{request.amount ? `$${request.amount}` : 'N/A'}</td>
+                  <td className="py-3 px-4">{request.amount ? `₹${request.amount}` : 'N/A'}</td>
                   <td className="py-3 px-4">
                     {request.developerName ? (
                       <span className="flex items-center gap-1">
@@ -176,16 +203,16 @@ const UserAssistance = () => {
                     ) : 'N/A'}
                   </td>
                   <td className="py-3 px-4">
-                    {request.requestStatus === 'Approved' && request.paymentStatus === 'Pending' && !request.transactionId && (
+                    {request.requestStatus === 'Approved' && request.paymentStatus === 'Pending' && !request.transactionId && request.amount > 0 && (
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handlePayment(request._id)}
+                          onClick={() => handlePayment(request)}
                           className={`px-3 py-1 rounded-md ${theme === 'dark' ? 'bg-green-700 hover:bg-green-600 text-white' : 'bg-green-600 hover:bg-green-700 text-white'}`}
                         >
                           Google Pay
                         </button>
                         <button
-                          onClick={() => handlePayment(request._id, 'Razorpay')}
+                          onClick={() => handlePayment(request)}
                           className={`px-3 py-1 rounded-md ${theme === 'dark' ? 'bg-blue-700 hover:bg-blue-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
                         >
                           Razorpay
@@ -240,7 +267,9 @@ const UserAssistance = () => {
 
               {selectedReq.paymentQrCode ? (
                 <div className="mb-4">
-                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Scan the QR code to pay:</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Scan the QR code to pay ₹{selectedReq.amount}:
+                  </p>
                   <img
                     src={selectedReq.paymentQrCode}
                     alt="Google Pay QR Code"
@@ -248,11 +277,15 @@ const UserAssistance = () => {
                   />
                 </div>
               ) : (
-                <p className={`mb-4 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>No QR code provided by admin.</p>
+                <p className={`mb-4 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                  No QR code provided by admin. Please contact support.
+                </p>
               )}
 
               <div className="mb-4">
-                <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Transaction ID</label>
+                <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Transaction ID
+                </label>
                 <input
                   type="text"
                   value={transactionId}
@@ -263,7 +296,9 @@ const UserAssistance = () => {
               </div>
 
               {error && (
-                <p className={`mb-4 text-sm ${theme === 'dark' ? 'text-red-400' : 'text-red-500'}`}>{error}</p>
+                <p className={`mb-4 text-sm ${theme === 'dark' ? 'text-red-400' : 'text-red-500'}`}>
+                  {error}
+                </p>
               )}
 
               <div className="flex justify-end gap-2">

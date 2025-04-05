@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // Define the initial state, fetching from localStorage or defaulting to 'light'
 const initialState = {
   theme: localStorage.getItem('theme') || 'light', // Load from localStorage if exists
+  isDrawerOpen: false,
 };
 
 const generalSlice = createSlice({
@@ -25,11 +26,17 @@ const generalSlice = createSlice({
       state.theme = state.theme === 'light' ? 'dark' : 'light';
       localStorage.setItem('theme', state.theme); // Sync to localStorage
     },
+    toggleDrawer: (state) => {
+      state.isDrawerOpen = !state.isDrawerOpen;
+    },
+    setDrawerOpen: (state, action) => {
+      state.isDrawerOpen = action.payload;
+    },
   },
 });
 
 // Export the actions to use in components
-export const { setLightMode, setDarkMode, toggleTheme } = generalSlice.actions;
+export const { setLightMode, setDarkMode, toggleTheme,setDrawerOpen,toggleDrawer } = generalSlice.actions;
 
 // Export the reducer to include in the store
 export default generalSlice.reducer;

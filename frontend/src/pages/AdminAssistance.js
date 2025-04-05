@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllAssistRequests, updateAssistRequest } from '../services/assistRequestService';
-import { Clock, Check, AlertCircle,  Edit, DollarSign, X, Eye } from 'lucide-react';
+import { Clock, Check, AlertCircle, Edit, DollarSign, X, Eye } from 'lucide-react';
 
 const AdminAssistance = () => {
   const [assistRequests, setAssistRequests] = useState([]);
@@ -248,22 +248,25 @@ const AdminAssistance = () => {
 
                   {/* Developer & Payment Fields */}
                   <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                        Amount ($)
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                        <input
-                          type="number"
-                          name="amount"
-                          value={editingRequest.amount || ''}
-                          onChange={handleInputChange}
-                          placeholder="0.00"
-                          className="w-full p-2.5 pl-8 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
+                    {/* Show Amount field only if requestStatus is Approved */}
+                    {editingRequest.requestStatus === 'Approved' && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+                          Amount (₹)
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                          <input
+                            type="number"
+                            name="amount"
+                            value={editingRequest.amount || ''}
+                            onChange={handleInputChange}
+                            placeholder="0.00"
+                            className="w-full p-2.5 pl-8 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     <div>
                       <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
@@ -317,11 +320,11 @@ const AdminAssistance = () => {
                     <input
                       type="text"
                       name="transactionId"
-                      value={editingRequest.transactionId || ''} // Display transactionId if it exists
+                      value={editingRequest.transactionId || ''} 
                       onChange={handleInputChange}
                       placeholder="Enter transaction ID"
                       className="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      disabled // Make it read-only since admin shouldn't edit this directly
+                      disabled 
                     />
                   </div>
                 </div>

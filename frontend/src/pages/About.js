@@ -1,188 +1,313 @@
-import React from "react";
-import { GithubIcon, Linkedin, Mail, Globe, Code, Coffee, Heart, User, Calendar, Award, FileText } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { GithubIcon, Mail, Globe, Code, Coffee, Heart, Award } from "lucide-react";
+import { motion } from "framer-motion";
 import Footer from "../components/footer";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const About = () => {
+  const navigate = useNavigate();
+  const { theme } = useSelector((state) => state.general);
+  const [developerImages, setDeveloperImages] = useState({});
+
   const developers = [
-    { 
-      name: "Anand", 
+    {
+      name: "Anand",
       role: "Software Developer",
-      bio: "Passionate about creating intuitive user interfaces and scalable backend systems. Expertise in React, Node.js, and cloud infrastructure.",
       github: "https://github.com/anandhu-12-boo/",
-      linkedin: "https://linkedin.com/in/anand",
       email: "anand@example.com",
       website: "https://anand.dev",
-
     },
-    { 
-      name: "Sojan", 
+    {
+      name: "Sojan",
       role: "Software Developer",
-      bio: "Design-focused developer with an eye for creating beautiful and functional user experiences. Specializes in responsive design and animation.",
       github: "https://github.com/sojanonelson",
-      linkedin: "https://linkedin.com/in/sojan",
       email: "sojan@example.com",
       website: "https://sojanthomas.com",
-
-    }
+    },
   ];
 
   const companyValues = [
     {
       title: "Innovation",
-      description: "We constantly explore new technologies and approaches to deliver cutting-edge solutions.",
-      icon: <Code className="w-6 h-6 text-blue-600" />
+      description: "Pushing boundaries with cutting-edge technology.",
+      icon: <Code className="w-8 h-8 text-blue-500" />,
     },
     {
       title: "Quality",
-      description: "We're committed to delivering robust, well-tested code and exceptional user experiences.",
-      icon: <Award className="w-6 h-6 text-blue-600" />
+      description: "Delivering robust, high-standard solutions.",
+      icon: <Award className="w-8 h-8 text-blue-500" />,
     },
     {
       title: "Collaboration",
-      description: "We believe in the power of teamwork and open communication to achieve outstanding results.",
-      icon: <Coffee className="w-6 h-6 text-blue-600" />
+      description: "Teamwork drives our success.",
+      icon: <Coffee className="w-8 h-8 text-blue-500" />,
     },
     {
       title: "User-Centered",
-      description: "We design and develop with real users in mind, focusing on solving genuine problems.",
-      icon: <Heart className="w-6 h-6 text-blue-600" />
-    }
+      description: "Designed with users at the heart.",
+      icon: <Heart className="w-8 h-8 text-blue-500" />,
+    },
   ];
 
-  const milestones = [
-    { year: "2020", event: "Company founded" },
-    { year: "2021", event: "First major client project completed" },
-    { year: "2022", event: "Team expanded to 5 members" },
-    { year: "2023", event: "Launched our first SaaS product" },
-    { year: "2024", event: "Reached 50+ successful projects" }
-  ];
+  // Fetch GitHub profile images
+  useEffect(() => {
+    const fetchImages = async () => {
+      const images = {};
+      for (const dev of developers) {
+        const username = dev.github.split('/').filter(Boolean).pop();
+        try {
+          const response = await fetch(`https://api.github.com/users/${username}`);
+          const data = await response.json();
+          images[dev.name] = data.avatar_url;
+        } catch (error) {
+          console.error(`Error fetching GitHub avatar for ${username}:`, error);
+          images[dev.name] = null;
+        }
+      }
+      setDeveloperImages(images);
+    };
+    fetchImages();
+  }, []);
+
+  // Animation variants
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+    hover: {
+      y: -10,
+      boxShadow: theme === "dark" ? "0 15px 30px rgba(0, 0, 0, 0.4)" : "0 15px 30px rgba(0, 0, 0, 0.15)",
+      transition: { duration: 0.3 },
+    },
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } },
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'} overflow-x-hidden`}>
       {/* Hero Section */}
-      <div className="bg-white py-20 border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-8">
-          <h1 className="text-5xl font-bold mb-6 text-center text-blue-800">About Us</h1>
-          <p className="text-xl text-gray-600 mb-8 text-center max-w-3xl mx-auto leading-relaxed">
-            Our mission is to develop innovative and user-friendly web applications that 
-            enhance productivity, collaboration, and user experience. We are a team of 
-            passionate developers dedicated to creating high-quality solutions that make a difference.
+      <motion.section
+        className={`relative py-24 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+          <h1 className={`text-4xl sm:text-5xl font-extrabold mb-6 ${theme === 'dark' ? 'text-blue-300' : 'text-blue-800'}`}>
+            About Our Team
+          </h1>
+          <p className={`text-lg sm:text-xl ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-10 max-w-3xl mx-auto leading-relaxed`}>
+            Crafting innovative, user-centric web solutions with passion and precision since our inception.
           </p>
-          <div className="flex justify-center space-x-4">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">Our Services</button>
-            <button className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium transition">Contact Us</button>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => navigate('/services')}
+              className={`${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'} text-white px-6 py-3 rounded-full font-semibold transition-all duration-300`}
+            >
+              Explore Services
+            </button>
+            <button
+              onClick={() => navigate('/contact')}
+              className={`${theme === 'dark' ? 'bg-transparent border-blue-500 text-blue-400 hover:bg-blue-900' : 'bg-transparent border-blue-600 text-blue-600 hover:bg-blue-50'} border-2 px-6 py-3 rounded-full font-semibold transition-all duration-300`}
+            >
+              Get in Touch
+            </button>
           </div>
         </div>
-      </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100 opacity-20 dark:opacity-10 pointer-events-none" />
+      </motion.section>
 
       {/* Company Values */}
-      <div className="py-16 px-8 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Our Core Values</h2>
-          <div className="grid md:grid-cols-2 gap-8">
+      <motion.section
+        className={`py-20 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={sectionVariants}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <h2 className={`text-3xl sm:text-4xl font-bold mb-12 text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            What Drives Us
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {companyValues.map((value, index) => (
-              <div key={index} className="bg-gray-50 rounded-lg p-6 shadow-sm border border-gray-100 hover:shadow-md transition">
-                <div className="flex items-start">
-                  <div className="bg-blue-100 p-3 rounded-lg mr-4">
-                    {value.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
-                    <p className="text-gray-600">{value.description}</p>
-                  </div>
+              <motion.div
+                key={index}
+                className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl p-6 border shadow-md hover:shadow-lg transition-all duration-300`}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                whileHover="hover"
+                viewport={{ once: true }}
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-4">{value.icon}</div>
+                  <h3 className={`text-xl font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    {value.title}
+                  </h3>
+                  
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </div>
+      </motion.section>
 
-      {/* Meet the Team */}
-      <div className="py-16 px-8 bg-gray-100">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4 text-center">Meet Our Team</h2>
-          <p className="text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            Our talented team brings together diverse skills and perspectives to create exceptional digital experiences.
-          </p>
-          <div className="flex flex-wrap justify-center gap-8">
-  {developers.map((dev, index) => (
-    <div
-      key={index}
-      className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 hover:shadow-lg transition w-80 h-60 flex flex-col"
-    >
-      <div className="bg-blue-600 h-12"></div>
-      <div className="p-6 flex-1 flex flex-col justify-between">
-        <div>
-          <h3 className="text-xl font-bold mb-1">{dev.name}</h3>
-          <p className="text-blue-600 font-medium mb-3">{dev.role}</p>
-         
-        </div>
-
-        <div className="flex space-x-3 pt-4 border-t border-gray-100">
-          <a href={dev.github} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition">
-            <GithubIcon size={18} />
-          </a>
-          
-          <a href={`mailto:${dev.email}`} className="text-gray-600 hover:text-blue-600 transition">
-            <Mail size={18} />
-          </a>
-          <a href={dev.website} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition">
-            <Globe size={18} />
-          </a>
-        </div>
-      </div>
-    </div>
-  ))}
-</div>
-
-        </div>
-      </div>
-
-      {/* <div className="py-16 px-8 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Our Journey</h2>
-          
-          <div className="relative">
-          
-            <div className="absolute left-4 lg:left-1/2 transform lg:-translate-x-1/2 h-full w-0.5 bg-blue-200"></div>
-            
-           
-            {milestones.map((milestone, index) => (
-              <div key={index} className={`flex mb-8 relative ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
-                <div className="hidden lg:block lg:w-1/2"></div>
-                <div className="absolute left-4 lg:left-1/2 transform lg:-translate-x-1/2 -translate-y-1/4">
-                  <div className="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center shadow-md">
-                    <Calendar size={16} className="text-white" />
+      {/* Meet the Team - New Design */}
+      <motion.section
+        className={`py-20 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={sectionVariants}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
+          <motion.h2
+            className={`text-4xl sm:text-5xl font-extrabold mb-6 text-center ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            Our Team
+          </motion.h2>
+          <motion.p
+            className={`text-lg sm:text-xl ${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            } mb-16 text-center max-w-3xl mx-auto leading-relaxed`}
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            Meet the brilliant minds crafting exceptional digital solutions with creativity and expertise.
+          </motion.p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {developers.map((dev, index) => (
+              <motion.div
+                key={index}
+                className={`${
+                  theme === "dark" ? "bg-gray-800" : "bg-white"
+                } rounded-3xl overflow-hidden border ${
+                  theme === "dark" ? "border-gray-700" : "border-gray-200"
+                } shadow-md`}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                whileHover="hover"
+                viewport={{ once: true }}
+              >
+                <div className="relative pt-8 pb-12 px-6 flex flex-col items-center">
+                 
+                  <div
+                    className={`absolute top-0 left-0 w-full h-32 ${
+                      theme === "dark" ? "bg-gradient-to-b from-blue-900 to-gray-800" : "bg-white"
+                    }`}
+                  />
+                  <div className="relative z-10 text-center">
+                    <h3
+                      className={`text-2xl font-semibold mb-2 ${
+                        theme === "dark" ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      {dev.name}
+                    </h3>
+                    <p
+                      className={`text-base font-medium mb-4 ${
+                        theme === "dark" ? "text-blue-400" : "text-blue-600"
+                      }`}
+                    >
+                      {dev.role}
+                    </p>
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      } mb-6 max-w-xs mx-auto`}
+                    >
+                      {dev.bio}
+                    </p>
+                    <div className="flex justify-center gap-6">
+                      <a
+                        href={dev.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${
+                          theme === "dark"
+                            ? "text-gray-400 hover:text-blue-400"
+                            : "text-gray-600 hover:text-blue-600"
+                        } transition-all duration-300 hover:scale-110`}
+                      >
+                        <GithubIcon size={24} />
+                      </a>
+                      <a
+                        href={`mailto:${dev.email}`}
+                        className={`${
+                          theme === "dark"
+                            ? "text-gray-400 hover:text-blue-400"
+                            : "text-gray-600 hover:text-blue-600"
+                        } transition-all duration-300 hover:scale-110`}
+                      >
+                        <Mail size={24} />
+                      </a>
+                      <a
+                        href={dev.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${
+                          theme === "dark"
+                            ? "text-gray-400 hover:text-blue-400"
+                            : "text-gray-600 hover:text-blue-600"
+                        } transition-all duration-300 hover:scale-110`}
+                      >
+                        <Globe size={24} />
+                      </a>
+                    </div>
                   </div>
                 </div>
-                <div className="ml-12 lg:ml-0 lg:w-1/2 lg:px-8">
-                  <div className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100">
-                    <span className="font-bold text-blue-600">{milestone.year}</span>
-                    <p className="text-gray-700">{milestone.event}</p>
-                  </div>
-                </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </div> */}
+      </motion.section>
 
       {/* Contact CTA */}
-      <div className="py-16 px-8 bg-blue-600 text-white">
+      <motion.section
+        className={`${theme === 'dark' ? 'bg-blue-900' : 'bg-blue-600'} py-20 px-6 text-white`}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={sectionVariants}
+      >
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Work With Us?</h2>
-          <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
-            We're always looking for new challenges and exciting projects. 
-            Reach out to discuss how we can help bring your vision to life.
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Let’s Collaborate</h2>
+          <p className={`text-lg ${theme === 'dark' ? 'text-blue-300' : 'text-blue-100'} mb-8 max-w-2xl mx-auto`}>
+            Ready to turn your ideas into reality? We’re excited to partner with you.
           </p>
-          <button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium transition">
-            Get in Touch
+          <button
+            onClick={() => navigate('/contact')}
+            className={`${theme === 'dark' ? 'bg-white text-blue-900 hover:bg-gray-100' : 'bg-white text-blue-600 hover:bg-blue-50'} px-8 py-3 rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg`}
+          >
+            Contact Us
           </button>
         </div>
-      </div>
+      </motion.section>
 
       {/* Footer */}
-    <Footer/>
+      <Footer />
     </div>
   );
 };

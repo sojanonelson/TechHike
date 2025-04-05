@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getAssignedProjects } from '../services/projectService'; // For projects
-// import { getPendingPayments } from '../services/paymentService'; // Assumed service for payments
 
 const UserDashboard = () => {
   const [projects, setProjects] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -16,13 +14,8 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchClientData = async () => {
       try {
-        // Fetch projects and payments concurrently
-        const [projectData /*, paymentData*/] = await Promise.all([
-          getAssignedProjects(user.id),
-          // getPendingPayments(user.id), // Uncomment when service is available
-        ]);
+        const [projectData] = await Promise.all([getAssignedProjects(user.id)]);
         setProjects(projectData || []);
-        // setPendingPayments(paymentData || []); // Uncomment when service is available
       } catch (err) {
         setError('Failed to load dashboard data');
       } finally {
@@ -37,6 +30,13 @@ const UserDashboard = () => {
     navigate(`/projects/${projectId}`);
   };
 
+  // Handlers for the new buttons
+  const handleEnquiry = () => navigate('/enquiry');
+  const handleAssistance = () => navigate('/dashboard/assistance');
+  const handleProject = () => navigate('/projects');
+  const handleHelp = () => navigate('/help');
+  const handleSupport = () => navigate('/support');
+
   if (loading) return (
     <div className={`flex items-center justify-center h-screen ${theme === 'dark' ? 'text-white bg-gray-900' : 'text-black bg-white'}`}>
       Loading...
@@ -49,7 +49,7 @@ const UserDashboard = () => {
   );
 
   return (
-    <div className={` w-full  mx-auto mt-10 p-6 ${theme === 'dark' ? 'text-white bg-gray-800' : 'text-black bg-white'}`}>
+    <div className={`w-full mx-auto mt-10 p-6 ${theme === 'dark' ? 'text-white bg-gray-800' : 'text-black bg-white'}`}>
       {/* Header */}
       <h1 className="text-3xl font-bold mb-6">Welcome, {user.name}!</h1>
 
@@ -63,8 +63,56 @@ const UserDashboard = () => {
         </p>
       </div>
 
-      {/* Projects Section */}
+      {/* Action Buttons Section */}
       <section className="mb-10">
+        <h2 className="text-2xl font-semibold mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <button
+            onClick={handleEnquiry}
+            className={`py-3 px-4 rounded-lg shadow-md font-semibold transition-colors duration-200 ${
+              theme === 'dark'
+                ? 'bg-blue-700 text-white hover:bg-blue-600'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            }`}
+          >
+            Enquiry
+          </button>
+          <button
+            onClick={handleAssistance}
+            className={`py-3 px-4 rounded-lg shadow-md font-semibold transition-colors duration-200 ${
+              theme === 'dark'
+                ? 'bg-green-700 text-white hover:bg-green-600'
+                : 'bg-green-500 text-white hover:bg-green-600'
+            }`}
+          >
+            Assistance
+          </button>
+          <button
+            onClick={handleProject}
+            className={`py-3 px-4 rounded-lg shadow-md font-semibold transition-colors duration-200 ${
+              theme === 'dark'
+                ? 'bg-yellow-700 text-white hover:bg-yellow-600'
+                : 'bg-yellow-500 text-white hover:bg-yellow-600'
+            }`}
+          >
+            Project
+          </button>
+          <button
+            onClick={handleHelp}
+            className={`py-3 px-4 rounded-lg shadow-md font-semibold transition-colors duration-200 ${
+              theme === 'dark'
+                ? 'bg-purple-700 text-white hover:bg-purple-600'
+                : 'bg-purple-500 text-white hover:bg-purple-600'
+            }`}
+          >
+            Report
+          </button>
+          
+        </div>
+      </section>
+
+      {/* Projects Section (Commented out in original code, kept as is) */}
+      {/* <section className="mb-10">
         <h2 className="text-2xl font-semibold mb-4">Your Projects</h2>
         {projects.length === 0 ? (
           <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>No projects assigned yet.</p>
@@ -90,39 +138,6 @@ const UserDashboard = () => {
                   }`}
                 >
                   {project.status}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Pending Payments Section (Commented Out) */}
-      {/* <section className="mb-10">
-        <h2 className="text-2xl font-semibold mb-4">Pending Payments</h2>
-        {pendingPayments.length === 0 ? (
-          <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>No pending payments at this time.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {pendingPayments.map((payment) => (
-              <div
-                key={payment._id}
-                className={`shadow-md rounded-lg p-5 flex justify-between items-center ${
-                  theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'
-                }`}
-              >
-                <div>
-                  <h3 className="text-lg font-semibold">{payment.projectTitle || 'Payment'}</h3>
-                  <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>
-                    Amount: ${payment.amount.toFixed(2)}
-                  </p>
-                </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    theme === 'dark' ? 'bg-red-900 text-red-300' : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  Pending
                 </span>
               </div>
             ))}
