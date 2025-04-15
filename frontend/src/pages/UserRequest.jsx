@@ -352,7 +352,7 @@ const UserRequest = () => {
                           onClick={() => window.location.href = '/dashboard/assistance'}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm ${theme === 'dark' ? 'bg-blue-700 hover:bg-blue-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
                         >
-                          Make Payment
+                          Manage
                         </button>
                       )}
                       {request.transactionId && request.assistStatus === 'Completed' && !request.feedback && (

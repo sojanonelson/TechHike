@@ -103,10 +103,10 @@ const UserAssistance = () => {
 
   return (
     <div className={`container mx-auto p-5 w-full mt-16 ${theme === 'dark' ? 'text-white bg-gray-900' : 'text-black bg-white'}`}>
-      <h1 className="text-3xl font-bold mb-6">Your Assist Requests</h1>
+      <h1 className="text-3xl font-bold mb-6 poppins-bold">Your Assist Requests</h1>
 
       {assistRequests.length === 0 ? (
-        <div className={`flex flex-col items-center justify-center p-6 rounded-lg shadow-md ${
+        <div className={`flex flex-col items-center justify-center p-6 rounded-lg  ${
           theme === 'dark' ? 'bg-gray-800 text-gray-400' : 'bg-gray-100 text-gray-500'
         }`}>
           <svg
@@ -136,7 +136,7 @@ const UserAssistance = () => {
           </button>
         </div>
       ) : (
-        <div className={`shadow-md rounded-lg overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+        <div className={` rounded overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
           <table className="w-full border-collapse">
             <thead>
               <tr className={theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}>

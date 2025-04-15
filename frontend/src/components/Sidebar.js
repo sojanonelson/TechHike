@@ -12,8 +12,9 @@ const Sidebar = ({ navigate }) => {
   // Define navItems array
   const navItems = [
     { name: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, path: '' },
-    { name: 'Projects', icon: <FileText className="w-5 h-5" />, path: 'projects' },
     { name: 'Request', icon: <Inbox className="w-5 h-5" />, path: 'request' },
+    { name: 'Projects', icon: <FileText className="w-5 h-5" />, path: 'projects' },
+
     { name: 'Clients', icon: <Users className="w-5 h-5" />, path: 'clients' },
     { name: 'Assistance', icon: <LifeBuoy className="w-5 h-5" />, path: 'assistance' }, // Changed to LifeBuoy
     { name: 'Settings', icon: <Settings className="w-5 h-5" />, path: 'settings' },,

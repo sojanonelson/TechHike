@@ -1,6 +1,6 @@
 // App.js
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { BrowserRouter  as Router, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setLightMode } from "./redux/generalSlice";
 import Home from "./pages/Home";

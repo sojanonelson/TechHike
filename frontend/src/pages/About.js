@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 const About = () => {
   const navigate = useNavigate();
   const { theme } = useSelector((state) => state.general);
-  const [developerImages, setDeveloperImages] = useState({});
 
   const developers = [
     {
@@ -17,6 +16,7 @@ const About = () => {
       github: "https://github.com/anandhu-12-boo/",
       email: "anand@example.com",
       website: "https://anand.dev",
+      bio: "Full-stack developer with expertise in React and Node.js. Passionate about building scalable applications."
     },
     {
       name: "Sojan",
@@ -24,7 +24,24 @@ const About = () => {
       github: "https://github.com/sojanonelson",
       email: "sojan@example.com",
       website: "https://sojanthomas.com",
+      bio: "Backend specialist with extensive experience in database architecture and cloud services."
     },
+    {
+      name: "Azna",
+      role: "UI/UX Designer",
+      github: "https://github.com/Aznachang",
+      email: "azna@example.com",
+      website: "https://azna.design",
+      bio: "Creative designer focused on creating intuitive user experiences and beautiful interfaces."
+    },
+    {
+      name: "Jerin",
+      role: "Software Tester",
+      github: "",
+      email: "jerin@example.com",
+      website: "https://jerin-testing.com",
+      bio: "Quality assurance expert ensuring our products meet the highest standards of reliability."
+    }
   ];
 
   const companyValues = [
@@ -49,26 +66,6 @@ const About = () => {
       icon: <Heart className="w-8 h-8 text-blue-500" />,
     },
   ];
-
-  // Fetch GitHub profile images
-  useEffect(() => {
-    const fetchImages = async () => {
-      const images = {};
-      for (const dev of developers) {
-        const username = dev.github.split('/').filter(Boolean).pop();
-        try {
-          const response = await fetch(`https://api.github.com/users/${username}`);
-          const data = await response.json();
-          images[dev.name] = data.avatar_url;
-        } catch (error) {
-          console.error(`Error fetching GitHub avatar for ${username}:`, error);
-          images[dev.name] = null;
-        }
-      }
-      setDeveloperImages(images);
-    };
-    fetchImages();
-  }, []);
 
   // Animation variants
   const sectionVariants = {
@@ -157,7 +154,9 @@ const About = () => {
                   <h3 className={`text-xl font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                     {value.title}
                   </h3>
-                  
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {value.description}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -165,7 +164,7 @@ const About = () => {
         </div>
       </motion.section>
 
-      {/* Meet the Team - New Design */}
+      {/* Meet the Team - Redesigned */}
       <motion.section
         className={`py-20 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
         initial="hidden"
@@ -173,7 +172,7 @@ const About = () => {
         viewport={{ once: true }}
         variants={sectionVariants}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <motion.h2
             className={`text-4xl sm:text-5xl font-extrabold mb-6 text-center ${
               theme === "dark" ? "text-white" : "text-gray-900"
@@ -196,51 +195,52 @@ const About = () => {
           >
             Meet the brilliant minds crafting exceptional digital solutions with creativity and expertise.
           </motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {developers.map((dev, index) => (
               <motion.div
                 key={index}
                 className={`${
-                  theme === "dark" ? "bg-gray-800" : "bg-white"
-                } rounded-3xl overflow-hidden border ${
-                  theme === "dark" ? "border-gray-700" : "border-gray-200"
-                } shadow-md`}
+                  theme === "dark" ? "bg-gray-700" : "bg-white"
+                } rounded-xl overflow-hidden shadow-lg transition-all duration-300`}
                 variants={cardVariants}
                 initial="hidden"
                 whileInView="visible"
                 whileHover="hover"
                 viewport={{ once: true }}
               >
-                <div className="relative pt-8 pb-12 px-6 flex flex-col items-center">
-                 
-                  <div
-                    className={`absolute top-0 left-0 w-full h-32 ${
-                      theme === "dark" ? "bg-gradient-to-b from-blue-900 to-gray-800" : "bg-white"
-                    }`}
-                  />
-                  <div className="relative z-10 text-center">
-                    <h3
-                      className={`text-2xl font-semibold mb-2 ${
+                <div className="relative group">
+                  <div className={`h-40 ${theme === "dark" ? "bg-blue-900" : "bg-blue-600"} relative overflow-hidden`}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                  </div>
+                  <div className="relative px-6 pb-8 -mt-16">
+                    <div className="flex justify-center">
+                      <motion.div
+                        className={`h-24 w-24 rounded-full border-4 ${
+                          theme === "dark" ? "border-gray-700" : "border-white bg-white"
+                        } overflow-hidden shadow-lg poppins-bold flex items-center justify-center`}
+                        variants={imageVariants}
+                      >
+                        <span className="text-4xl font-bold">{dev.name.charAt(0)}</span>
+                      </motion.div>
+                    </div>
+                    <div className="text-center mt-4">
+                      <h3 className={`text-xl font-bold ${
                         theme === "dark" ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      {dev.name}
-                    </h3>
-                    <p
-                      className={`text-base font-medium mb-4 ${
+                      }`}>
+                        {dev.name}
+                      </h3>
+                      <p className={`text-sm font-medium ${
                         theme === "dark" ? "text-blue-400" : "text-blue-600"
-                      }`}
-                    >
-                      {dev.role}
-                    </p>
-                    <p
-                      className={`text-sm ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-600"
-                      } mb-6 max-w-xs mx-auto`}
-                    >
-                      {dev.bio}
-                    </p>
-                    <div className="flex justify-center gap-6">
+                      } mt-1`}>
+                        {dev.role}
+                      </p>
+                      <p className={`text-sm ${
+                        theme === "dark" ? "text-gray-300" : "text-gray-600"
+                      } mt-3`}>
+                        {dev.bio}
+                      </p>
+                    </div>
+                    <div className="flex justify-center gap-4 mt-6">
                       <a
                         href={dev.github}
                         target="_blank"
@@ -250,19 +250,11 @@ const About = () => {
                             ? "text-gray-400 hover:text-blue-400"
                             : "text-gray-600 hover:text-blue-600"
                         } transition-all duration-300 hover:scale-110`}
+                        aria-label={`${dev.name}'s GitHub`}
                       >
-                        <GithubIcon size={24} />
+                        <GithubIcon size={20} />
                       </a>
-                      <a
-                        href={`mailto:${dev.email}`}
-                        className={`${
-                          theme === "dark"
-                            ? "text-gray-400 hover:text-blue-400"
-                            : "text-gray-600 hover:text-blue-600"
-                        } transition-all duration-300 hover:scale-110`}
-                      >
-                        <Mail size={24} />
-                      </a>
+                    
                       <a
                         href={dev.website}
                         target="_blank"
@@ -272,8 +264,9 @@ const About = () => {
                             ? "text-gray-400 hover:text-blue-400"
                             : "text-gray-600 hover:text-blue-600"
                         } transition-all duration-300 hover:scale-110`}
+                        aria-label={`${dev.name}'s Website`}
                       >
-                        <Globe size={24} />
+                        <Globe size={20} />
                       </a>
                     </div>
                   </div>
@@ -293,9 +286,9 @@ const About = () => {
         variants={sectionVariants}
       >
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Let’s Collaborate</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Let's Collaborate</h2>
           <p className={`text-lg ${theme === 'dark' ? 'text-blue-300' : 'text-blue-100'} mb-8 max-w-2xl mx-auto`}>
-            Ready to turn your ideas into reality? We’re excited to partner with you.
+            Ready to turn your ideas into reality? We're excited to partner with you.
           </p>
           <button
             onClick={() => navigate('/contact')}

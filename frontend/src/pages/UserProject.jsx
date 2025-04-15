@@ -59,7 +59,7 @@ const UserProject = () => {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="text-red-500 text-xl mb-4">⚠️ {error}</div>
-        <button 
+        <button
           className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           onClick={() => window.location.reload()}
         >
@@ -83,27 +83,13 @@ const UserProject = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen mt-16 p-6">
-      <div className=" mx-auto">
+      <div className="mx-auto">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">My Projects</h1>
             <p className="text-gray-600 mt-1">Browse and manage your assigned projects</p>
           </div>
-          
-          {/* Search Bar */}
-          {/* <div className="mt-4 md:mt-0 w-full md:w-64 lg:w-72">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search projects..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-            </div>
-          </div> */}
         </div>
 
         {/* Project Count Summary */}
@@ -119,19 +105,19 @@ const UserProject = () => {
         {/* Projects Grid */}
         {filteredProjects.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <div className="text-gray-500 mb-2">No projects found matching your search criteria</div>
-            <button 
-              onClick={() => setSearchTerm('')}
-              className="text-blue-500 hover:text-blue-700"
+            <div className="text-gray-500 mb-4">No projects found. Go to the request section to add a project.</div>
+            <button
+              onClick={() => navigate('/dashboard/request')}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
             >
-              Clear search
+              Go to Request Section
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProjects.map((project) => {
               const statusStyle = getStatusStyle(project.projectStatus);
-              
+
               return (
                 <div
                   key={project._id}
@@ -147,9 +133,9 @@ const UserProject = () => {
                         <span className="mr-1">{statusStyle.icon}</span> {project.projectStatus}
                       </span>
                     </div>
-                    
+
                     <p className="text-gray-600 mb-4 line-clamp-2">{project.projectDescription}</p>
-                    
+
                     {/* Additional Project Details */}
                     <div className="flex items-center text-sm text-gray-500 space-x-4">
                       <div className="flex items-center">
